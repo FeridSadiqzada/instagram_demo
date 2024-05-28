@@ -49,9 +49,9 @@ class AuthController extends GetxController {
         String accessToken = decodedJson['access_token'];
         updateToken(accessToken);
         Get.offAll(
-          () =>  HomePage(),
+          () => HomePage(),
           transition: Transition.rightToLeft,
-          );
+        );
       } else {
         Get.snackbar(
           'Hata',
@@ -68,6 +68,7 @@ class AuthController extends GetxController {
   Future<void> register(String email, String phone, String username,
       String password, String passwordConfirmation) async {
     isLoadingRegister(true);
+
     String requestBody = jsonEncode({
       'email': username.toString(),
       'phone': phone.toString(),
@@ -102,13 +103,14 @@ class AuthController extends GetxController {
       }
 
       if (response.statusCode == 200) {
-        Get.offAll(() =>  HomePage(),
-          transition: Transition.rightToLeft,
-          duration: Duration(milliseconds: 600));
+        Get.offAll(() => HomePage(),
+            transition: Transition.rightToLeft,
+            duration: Duration(milliseconds: 600));
       } else {
         Get.snackbar(
           'Error',
-          'Bütün inputlar dolmalıdır!',
+          '$res!',
+          duration: Duration(seconds: 10),
           backgroundColor: Colors.red,
           snackPosition: SnackPosition.TOP,
         );

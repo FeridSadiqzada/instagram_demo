@@ -39,7 +39,7 @@ class HomeController extends GetxController {
       }
     } else {
       if (kDebugMode) {
-        print("error");
+        print(response.body);
       }
     }
   }
