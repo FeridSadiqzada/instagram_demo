@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_demo/controllers/comment_controller.dart';
 import 'package:instagram_demo/controllers/home_page_controller.dart';
+import 'package:instagram_demo/models/comment.dart';
 import 'package:instagram_demo/models/media.dart';
 import 'package:http/http.dart' as http;
 import 'package:instagram_demo/models/post.dart';
@@ -26,12 +27,12 @@ class _HomePageState extends State<HomePage> {
   int currentPage = 0;
 
   late HomeController homeController = Get.put(HomeController());
-
+  late CommentController commentController;
   @override
   void initState() {
     super.initState();
     homeController.fetchPosts();
-    Get.lazyPut(() => CommentController());
+    commentController = Get.put(CommentController());
   }
 
   @override
@@ -178,11 +179,14 @@ class _HomePageState extends State<HomePage> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: homeController.posts.length,
             itemBuilder: (context, i) {
-              if (kDebugMode) {
-                print(homeController.posts[i]);
+              var post = homeController.posts[i];
+
+              // Yorumları asenkron olarak yükle, eğer zaten yüklenmemişse
+              if (!commentController.commentsMap.containsKey(post.id)) {
+                commentController.fetchComments(post.id);
               }
-              return _createPost(
-                  homeController.posts[i], homeController.posts[i].user);
+
+              return _createPost(post, post.user);
             },
           ),
         );
@@ -192,6 +196,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _createPost(Post post, User user) {
     var likes = post.likes.obs;
+
     List<Media> mediaList = post.media;
     Media media = mediaList[0];
     return Column(
@@ -281,11 +286,9 @@ class _HomePageState extends State<HomePage> {
                       width: 28.0,
                     ),
                     onPressed: () {
-                      CommentController commentController = Get.find();
-                      commentController.fetchComments(post.id);
                       Navigator.of(context).push(
                         CupertinoPageRoute(
-                            builder: (context) => const CommentPage()),
+                            builder: (context) => CommentPage(postId: post.id)),
                       );
                     },
                   ),
@@ -349,10 +352,10 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.topLeft,
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
-                      post.description, //ilk commenti qoy
-                      style:
-                          const TextStyle(color: Colors.grey, fontSize: 18.0),
-                    ))
+                            "post.description",
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 18.0),
+                          ),),
               ],
             )),
       ],
