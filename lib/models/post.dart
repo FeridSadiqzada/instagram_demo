@@ -20,6 +20,11 @@ class Post {
     required this.media,
   });
 
+  @override
+  String toString() {
+    return 'Post{id: $id, description: $description, likes: $likes, comments: $comments, liked: $liked, user: $user, media: ${media.join(', ')}}';
+  }
+
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         id: json['id'],
         description: json['description'],

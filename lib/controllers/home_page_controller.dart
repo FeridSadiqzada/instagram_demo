@@ -8,14 +8,13 @@ import 'package:instagram_demo/models/post.dart';
 
 class HomeController extends GetxController {
   var posts = <Post>[].obs;
+
   String token =
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2luc3RhZ3JhbS5iYWt1ZGV2cy5jb20vYXBpL2N1c3RvbWVyL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNjk2NTA3NDM2LCJuYmYiOjE2OTY1MDc0MzYsImp0aSI6Ik9RQmd5b1dwMVRUR1dRS2ciLCJzdWIiOiIxIiwicHJ2IjoiMWQwYTAyMGFjZjVjNGI2YzQ5Nzk4OWRmMWFiZjBmYmQ0ZThjOGQ2MyJ9.ooL3OdoN0o2jf-LgozZXa8wYWKRY1kJDGIWgR5scz_Q'; //'authController.getToken()';
-    var isLiked = false.obs;
+  var isLiked = false.obs;
 
- 
   void fetchPosts() async {
     AuthController authController = Get.find<AuthController>();
-//'authController.getToken()';
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -28,18 +27,16 @@ class HomeController extends GetxController {
     );
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+      List<Post> tempPosts = [];
       for (var item in jsonData['data']) {
-        posts.add(Post.fromJson(item));
+        tempPosts.add(Post.fromJson(item));
       }
-      if (kDebugMode) {
-        print(posts.length);
-      }
-      if (kDebugMode) {
-        print(jsonData);
-      }
+      tempPosts.sort((a, b) => a.id.compareTo(b.id));
+      posts.assignAll(tempPosts);
+
     } else {
       if (kDebugMode) {
-        print(response.body);
+        print('Failed to load posts: ${response.body}');
       }
     }
   }

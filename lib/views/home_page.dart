@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_demo/controllers/comment_controller.dart';
 import 'package:instagram_demo/controllers/home_page_controller.dart';
-import 'package:instagram_demo/models/comment.dart';
 import 'package:instagram_demo/models/media.dart';
 import 'package:http/http.dart' as http;
 import 'package:instagram_demo/models/post.dart';
@@ -14,7 +13,6 @@ import 'package:instagram_demo/models/stories.dart';
 import 'package:instagram_demo/models/user.dart';
 import 'package:instagram_demo/providers/stories_provider.dart';
 import 'package:instagram_demo/views/comments_page.dart';
-import 'package:instagram_demo/views/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -196,8 +194,6 @@ class _HomePageState extends State<HomePage> {
     var likes = post.likes.obs;
     List<Media> mediaList = post.media;
     Media media = mediaList[0];
-    CommentController commentController = Get.find();
-    commentController.fetchComments(post.id);
     return Column(
       children: <Widget>[
         Container(
@@ -285,6 +281,8 @@ class _HomePageState extends State<HomePage> {
                       width: 28.0,
                     ),
                     onPressed: () {
+                      CommentController commentController = Get.find();
+                      commentController.fetchComments(post.id);
                       Navigator.of(context).push(
                         CupertinoPageRoute(
                             builder: (context) => const CommentPage()),
@@ -379,18 +377,22 @@ class _HomePageState extends State<HomePage> {
             currentPage = i;
           });
         },
-        items:  [
+        items: [
           BottomNavigationBarItem(
-            icon: Image.asset('assets/img/home_o.png',width: 24, height: 24),
-             label: 'Home'),
-          BottomNavigationBarItem(icon: Image.asset('assets/img/Search.png',width: 24, height: 24),
-             label: 'Search'),
-          BottomNavigationBarItem(icon: Image.asset('assets/img/add_o.png',width: 24, height: 24),
-             label: 'upload'),
-          BottomNavigationBarItem(icon: Image.asset('assets/img/heart.png',width: 24, height: 24),
-             label: 'Likes'),
-          BottomNavigationBarItem(icon: Image.asset('assets/img/user_o.png',width: 24, height: 24),
-             label: 'Profile')
+              icon: Image.asset('assets/img/home_o.png', width: 24, height: 24),
+              label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Image.asset('assets/img/Search.png', width: 24, height: 24),
+              label: 'Search'),
+          BottomNavigationBarItem(
+              icon: Image.asset('assets/img/add_o.png', width: 24, height: 24),
+              label: 'upload'),
+          BottomNavigationBarItem(
+              icon: Image.asset('assets/img/heart.png', width: 24, height: 24),
+              label: 'Likes'),
+          BottomNavigationBarItem(
+              icon: Image.asset('assets/img/user_o.png', width: 24, height: 24),
+              label: 'Profile')
         ],
       ),
     );

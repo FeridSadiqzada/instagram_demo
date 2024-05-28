@@ -15,8 +15,13 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentPage> {
-  late CommentController commentController = Get.put(CommentController());
+  late CommentController commentController;
 
+  @override
+  void initState() {
+    super.initState();
+    commentController = Get.find<CommentController>();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
