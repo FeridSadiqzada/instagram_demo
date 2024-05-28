@@ -186,7 +186,11 @@ class _HomePageState extends State<HomePage> {
                 commentController.fetchComments(post.id);
               }
 
-              return _createPost(post, post.user);
+              return Obx(() {
+              var comments = commentController.commentsMap[post.id] ?? [];
+              var firstCommentText = comments.isNotEmpty ? comments.first.text : "No comments yet";
+              return _createPost(post, post.user, firstCommentText);
+            });
             },
           ),
         );
@@ -194,7 +198,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _createPost(Post post, User user) {
+  Widget _createPost(Post post, User user,String firstCommentText) {
     var likes = post.likes.obs;
 
     List<Media> mediaList = post.media;
@@ -352,10 +356,10 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.topLeft,
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
-                            "post.description",
+                            firstCommentText,
                             style: const TextStyle(
                                 color: Colors.grey, fontSize: 18.0),
-                          ),),
+                          ))
               ],
             )),
       ],
